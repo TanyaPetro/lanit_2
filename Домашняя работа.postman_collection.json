@@ -1,0 +1,762 @@
+{
+	"info": {
+		"_postman_id": "91ab3df5-d4f9-43f9-ad26-6ac165ce630d",
+		"name": "Проверка скриптов на соответствие",
+		"description": "Helpdesk API v1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32391993"
+	},
+	"item": [
+		{
+			"name": "Аутентифицироваться и получить токен",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var sessionToken = pm.response.json().token;\r",
+							"pm.globals.set(\"token\", sessionToken);\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Тело токена\", function () {\r",
+							"    pm.response.to.have.body({\r",
+							"        \"token\": \"abcbe889f0306a8d35dfa101eb152850b434be35\"\r",
+							"});\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\":\"admin\",\r\n    \"password\":\"adminft\"\r\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/login",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Создать тикет",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var idTicket = pm.response.json().id;\r",
+							"pm.globals.set(\"Created_Ticket_Id\",idTicket);\r",
+							"\r",
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"var requestAnswer = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Check title\", function(){\r",
+							"    pm.expect(requestAnswer.title).to.equal(pm.iterationData.get(\"title\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check queue\", function(){\r",
+							"    pm.expect(requestAnswer.queue).to.equal(pm.iterationData.get(\"queue\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check due_date\", function(){\r",
+							"    pm.expect(requestAnswer.due_date).to.equal(pm.iterationData.get(\"due_date\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check assigned_to\", function(){\r",
+							"    pm.expect(requestAnswer.assigned_to).to.equal(pm.iterationData.get(\"assigned_to\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check submitter_email\", function(){\r",
+							"    pm.expect(requestAnswer.submitter_email).to.equal(pm.iterationData.get(\"submitter_email\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check status\", function(){\r",
+							"    pm.expect(requestAnswer.status).to.equal(pm.iterationData.get(\"status\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check description\", function(){\r",
+							"    pm.expect(requestAnswer.description).to.equal(pm.iterationData.get(\"description\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check resolution\", function(){\r",
+							"    pm.expect(requestAnswer.resolution).to.equal(pm.iterationData.get(\"resolution\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check priority\", function(){\r",
+							"    pm.expect(requestAnswer.priority).to.equal(pm.iterationData.get(\"priority\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check secret_key\", function(){\r",
+							"    pm.expect(requestAnswer.secret_key).to.equal(pm.iterationData.get(\"secret_key\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check kbitem\", function(){\r",
+							"    pm.expect(requestAnswer.kbitem).to.equal(pm.iterationData.get(\"kbitem\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check merged_to\", function(){\r",
+							"    pm.expect(requestAnswer.merged_to).to.equal(pm.iterationData.get(\"merged_to\"),);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"{{title}}\",\n  \"queue\": \"{{queue}}\",\n  \"due_date\": \"{{due_date}}\",\n  \"assigned_to\": \"{{assigned_to}}\",\n  \"submitter_email\": \"{{submitter_email}}\",\n  \"status\": \"{{status}}\",\n  \"description\": \"{{description}}\",\n  \"resolution\": \"{{resolution}}\",\n  \"priority\": \"{{priority}}\",\n  \"secret_key\": \"{{secret_key}}\",\n  \"kbitem\": \"{{kbitem}}\",\n  \"merged_to\": \"{{merged_to}}\"\n}",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/tickets",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tickets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Информация о созданном тикете",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function(){\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var requestAnswer = pm.response.json();\r",
+							"\r",
+							"var requestAnswer = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Check title\", function(){\r",
+							"    pm.expect(requestAnswer.title).to.equal(pm.iterationData.get(\"title\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check queue\", function(){\r",
+							"    pm.expect(requestAnswer.queue).to.equal(pm.iterationData.get(\"queue\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check due_date\", function(){\r",
+							"    pm.expect(requestAnswer.due_date).to.equal(pm.iterationData.get(\"due_date\")+ \"T00:00:00\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check assigned_to\", function(){\r",
+							"    pm.expect(requestAnswer.assigned_to).to.equal(pm.iterationData.get(\"assigned_to\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check submitter_email\", function(){\r",
+							"    pm.expect(requestAnswer.submitter_email).to.equal(pm.iterationData.get(\"submitter_email\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check status\", function(){\r",
+							"    pm.expect(requestAnswer.status).to.equal(pm.iterationData.get(\"status\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check description\", function(){\r",
+							"    pm.expect(requestAnswer.description).to.equal(pm.iterationData.get(\"description\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check resolution\", function(){\r",
+							"    pm.expect(requestAnswer.resolution).to.equal(pm.iterationData.get(\"resolution\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check priority\", function(){\r",
+							"    pm.expect(requestAnswer.priority).to.equal(pm.iterationData.get(\"priority\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check secret_key\", function(){\r",
+							"    pm.expect(requestAnswer.secret_key).to.equal(pm.iterationData.get(\"secret_key\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check kbitem\", function(){\r",
+							"    pm.expect(requestAnswer.kbitem).to.equal(pm.iterationData.get(\"kbitem\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check merged_to\", function(){\r",
+							"    pm.expect(requestAnswer.merged_to).to.equal(pm.iterationData.get(\"merged_to\"),);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let title = pm.iterationData.get('title')\r",
+							"let queue = pm.iterationData.get('queue')\r",
+							"let due_date = pm.iterationData.get('due_date')\r",
+							"let assigned_to = pm.iterationData.get('assigned_to')\r",
+							"let submitter_email = pm.iterationData.get('submitter_email')\r",
+							"let status = pm.iterationData.get('status')\r",
+							"let description = pm.iterationData.get('description')\r",
+							"let resolution = pm.iterationData.get('resolution')\r",
+							"let priority = pm.iterationData.get('priority')\r",
+							"let secret_key = pm.iterationData.get('secret_key')\r",
+							"let kbitem = pm.iterationData.get('kbitem')\r",
+							"let merged_to = pm.iterationData.get('merged_to')\r",
+							"\r",
+							"let options = {\r",
+							"  method: 'POST',\r",
+							"  url: 'https://ft-sandbox.workbench.lanit.ru//api/tickets',\r",
+							"  header: {\r",
+							"    'Content-Type': 'application/json',\r",
+							"    'Authorization': 'Token abcbe889f0306a8d35dfa101eb152850b434be35'\r",
+							"  },\r",
+							"  body: {\r",
+							"    mode: 'raw',\r",
+							"    raw: JSON.stringify({\r",
+							"        title: title,\r",
+							"        queue: queue,\r",
+							"        due_date: due_date,\r",
+							"        assigned_to: assigned_to,\r",
+							"        submitter_email: submitter_email,\r",
+							"        status: status,\r",
+							"        description: description,\r",
+							"        resolution: resolution,\r",
+							"        priority: priority,\r",
+							"        secret_key: secret_key,\r",
+							"        kbitem: kbitem,\r",
+							"        merged_to: merged_to\r",
+							"    }),\r",
+							"    options: {\r",
+							"        raw: {language: 'json'}\r",
+							"    }\r",
+							"  }\r",
+							"\r",
+							"};\r",
+							"\r",
+							"pm.sendRequest(options, function(err, response) {\r",
+							"    let idTicket = response.json().id;\r",
+							"    pm.collectionVariables.set('Created_Ticket_Id',idTicket);\r",
+							"    let resol = response.json().resolution;\r",
+							"    pm.collectionVariables.set('Check_Resolution',resol);\r",
+							"    let stat = response.json().status;\r",
+							"    pm.collectionVariables.set('Check_Status',stat);\r",
+							"    console.log(response.json());\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/tickets/{{Created_Ticket_Id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tickets",
+						"{{Created_Ticket_Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Обновить тикет",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var requestAnswer = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Check new title\", function(){\r",
+							"    pm.expect(requestAnswer.title).to.equal(pm.iterationData.get(\"title_change\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new queue\", function(){\r",
+							"    pm.expect(requestAnswer.queue).to.equal(pm.iterationData.get(\"queue_change\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new due_date\", function(){\r",
+							"    pm.expect(requestAnswer.due_date).to.equal(pm.iterationData.get(\"due_date_change\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new assigned_to\", function(){\r",
+							"    pm.expect(requestAnswer.assigned_to).to.equal(pm.iterationData.get(\"assigned_to_change\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new submitter_email\", function(){\r",
+							"    pm.expect(requestAnswer.submitter_email).to.equal(pm.iterationData.get(\"submitter_email_change\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new status\", function(){\r",
+							"    pm.expect(requestAnswer.status).to.equal(pm.iterationData.get(\"status_change\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new description\", function(){\r",
+							"    pm.expect(requestAnswer.description).to.equal(pm.iterationData.get(\"description_change\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new resolution\", function(){\r",
+							"    pm.expect(requestAnswer.resolution).to.equal(pm.iterationData.get(\"resolution_change\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new priority\", function(){\r",
+							"    pm.expect(requestAnswer.priority).to.equal(pm.iterationData.get(\"priority_change\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new secret_key\", function(){\r",
+							"    pm.expect(requestAnswer.secret_key).to.equal(pm.iterationData.get(\"secret_key_change\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new kbitem\", function(){\r",
+							"    pm.expect(requestAnswer.kbitem).to.equal(pm.iterationData.get(\"kbitem_change\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new merged_to\", function(){\r",
+							"    pm.expect(requestAnswer.merged_to).to.equal(pm.iterationData.get(\"merged_to_change\"),);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"title\": \"{{title_change}}\",\n  \"queue\": \"{{queue_change}}\",\n  \"due_date\": \"{{due_date_change}}\",\n  \"assigned_to\": \"{{assigned_to_change}}\",\n  \"submitter_email\": \"{{submitter_email_change}}\",\n  \"status\": \"{{status_change}}\",\n  \"description\": \"{{description_change}}\",\n  \"resolution\": \"{{resolution_change}}\",\n  \"priority\": \"{{priority_change}}\",\n  \"secret_key\": \"{{secret_key_change}}\",\n  \"kbitem\": \"{{kbitem_change}}\",\n  \"merged_to\": \"{{merged_to_change}}\"\n}",
+					"options": {
+						"raw": {
+							"headerFamily": "json",
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/tickets/{{Created_Ticket_Id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tickets",
+						"{{Created_Ticket_Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Информация об обновленном тикете",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var requestAnswer = pm.response.json();\r",
+							"\r",
+							"pm.test(\"Check new title\", function(){\r",
+							"    pm.expect(requestAnswer.title).to.equal(pm.iterationData.get(\"title_change\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new queue\", function(){\r",
+							"    pm.expect(requestAnswer.queue).to.equal(pm.iterationData.get(\"queue_change\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new due_date\", function(){\r",
+							"    pm.expect(requestAnswer.due_date).to.equal(pm.iterationData.get(\"due_date_change\")+ \"T00:00:00\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new assigned_to\", function(){\r",
+							"    pm.expect(requestAnswer.assigned_to).to.equal(pm.iterationData.get(\"assigned_to_change\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new submitter_email\", function(){\r",
+							"    pm.expect(requestAnswer.submitter_email).to.equal(pm.iterationData.get(\"submitter_email_change\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new status\", function(){\r",
+							"    pm.expect(requestAnswer.status).to.equal(pm.iterationData.get(\"status_change\"));\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new description\", function(){\r",
+							"    pm.expect(requestAnswer.description).to.equal(pm.iterationData.get(\"description_change\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new resolution\", function(){\r",
+							"    pm.expect(requestAnswer.resolution).to.equal(pm.iterationData.get(\"resolution_change\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new priority\", function(){\r",
+							"    pm.expect(requestAnswer.priority).to.equal(pm.iterationData.get(\"priority_change\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new secret_key\", function(){\r",
+							"    pm.expect(requestAnswer.secret_key).to.equal(pm.iterationData.get(\"secret_key_change\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new kbitem\", function(){\r",
+							"    pm.expect(requestAnswer.kbitem).to.equal(pm.iterationData.get(\"kbitem_change\"),);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Check new merged_to\", function(){\r",
+							"    pm.expect(requestAnswer.merged_to).to.equal(pm.iterationData.get(\"merged_to_change\"),);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/tickets/{{Created_Ticket_Id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tickets",
+						"{{Created_Ticket_Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Удалить тикет",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/tickets/{{Created_Ticket_Id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tickets",
+						"{{Created_Ticket_Id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Проверка того, что тикет удален",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 404\", function () {\r",
+							"    pm.response.to.have.status(404);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Body is correct\", function () {\r",
+							"    pm.response.to.have.body({\r",
+							"        \"detail\": \"No Ticket matches the given query.\"}\r",
+							"    );\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Token {{token}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/tickets/{{Created_Ticket_Id}}",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"tickets",
+						"{{Created_Ticket_Id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "enviroment",
+			"value": "https://ft-dev-env-sandbox.workbench.lanit.ru/",
+			"type": "string",
+			"disabled": true
+		},
+		{
+			"key": "token",
+			"value": "abcbe889f0306a8d35dfa101eb152850b434be35",
+			"type": "string"
+		},
+		{
+			"key": "title",
+			"value": ""
+		},
+		{
+			"key": "description",
+			"value": ""
+		},
+		{
+			"key": "assigned_to",
+			"value": ""
+		},
+		{
+			"key": "queue",
+			"value": ""
+		},
+		{
+			"key": "Created_Ticket_Id",
+			"value": ""
+		},
+		{
+			"key": "Check_Resolution",
+			"value": ""
+		},
+		{
+			"key": "Check_Status",
+			"value": ""
+		}
+	]
+}
